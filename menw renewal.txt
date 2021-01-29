@@ -1,0 +1,60 @@
+https://programmers.co.kr/learn/courses/30/lessons/72411
+
+메뉴 리뉴얼 - kakao
+
+내풀이
+from itertools import combinations
+from collections import defaultdict
+def solution(orders, course):
+    answer = []
+    for i in range(len(orders)):
+        orders[i]=sorted(orders[i])
+    orders.sort(key=lambda x:len(x))
+    order_dic=defaultdict(int)
+    for i in range(len(orders)):
+        for j in course:
+            if len(orders[i])>=j:
+                order_list=list(combinations(orders[i],j))
+                for k in order_list:
+                    order_dic[k]+=1
+    order_list=[x for x in order_dic if order_dic[x]>1]
+    for i in course:
+        maxi=0
+        for j in order_list:
+            if len(j)==i:
+                if maxi<order_dic[j]:
+                    maxi=order_dic[j]
+        for j in order_list:
+            if len(j)==i and order_dic[j] == maxi:
+                answer.append(''.join(j))
+    return sorted(answer)
+
+다른 분 풀이
+
+import collections
+import itertools
+
+def solution(orders, course):
+    result = []
+
+    for course_size in course:
+        order_combinations = []
+        for order in orders:
+            order_combinations += itertools.combinations(sorted(order), course_size)
+
+        most_ordered = collections.Counter(order_combinations).most_common()
+        result += [ k for k, v in most_ordered if v > 1 and v == most_ordered[0][1] ]
+
+    return [ ''.join(v) for v in sorted(result) ]
+
+'''
+내 경우에는 order list중에서 2개 이상인것을 골라낼때와, 가장 큰값을 가졌을때를 따로 계산해주지만, 위의경우는 불필요한 course의 반복문을 줄임으로써, 훨씬 시간이 줄게된다.
+또한 Counter함수를 사용함으로써, 가장 common한 list를 얻게되고, 그 list에서 가장 많이나온값과 같고 2개 이상인것을 골라냄으로써 불필요한 과정을 줄였다. 너무깔끔한듯. 나도 문제풀면서 뭔가 이렇게 복잡할리가 없는데, 하면서 풀었는데 조금만 더 생각하면 더 쉬운 반복문으로 해결할 수 있다는 것을 알았다.
+'''
+
+
+#
+Hash(안쓰면 좋았을텐데..)
+collections.counter
+itertools.combinations
+#
